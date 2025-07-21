@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attendance Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url('https://i.imgflip.com/4t0m5.jpg'); /* Example meme background */
+      background-size: cover;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      color: white;
+      padding: 0;
+      margin: 0;
+      backdrop-filter: blur(5px);
+    }
+    .container {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 20px;
+      margin: 50px auto;
+      width: 90%;
+      max-width: 800px;
+      border-radius: 12px;
+    }
+    h1 {
+      text-align: center;
+      color: #00ffcc;
+    }
+    .subject {
+      margin-bottom: 20px;
+      padding: 10px;
+      background-color: #222;
+      border-radius: 8px;
+    }
+    .subject h3 {
+      margin: 0 0 10px 0;
+    }
+    button {
+      padding: 8px 16px;
+      margin-right: 10px;
+      font-size: 14px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .present {
+      background-color: #28a745;
+      color: white;
+    }
+    .absent {
+      background-color: #dc3545;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Attendance Tracker</h1>
+    <div id="subjects"></div>
+  </div>
+
+  <script>
+    const subjects = [
+      'Calculus',
+      'Physics',
+      'Elements of Biology',
+      'Computational Thinking for Problem Solving',
+      'Engineering Graphics and Design',
+      'Essential Electronics Practices',
+      'Indian Knowledge System',
+      'Environmental Sciences'
+    ];
+
+    const subjectsDiv = document.getElementById('subjects');
+
+    subjects.forEach(subject => {
+      const id = subject.replace(/\s+/g, '_').toLowerCase();
+      const data = JSON.parse(localStorage.getItem(id)) || { present: 0, total: 0 };
+
+      const div = document.createElement('div');
+      div.className = 'subject';
+      div.innerHTML = `
+        <h3>${subject}</h3>
+        <button class="present" onclick="mark('${id}', true)">Present</button>
+        <button class="absent" onclick="mark('${id}', false)">Absent</button>
+        <p id="${id}_info">${getPercentage(data)}</p>
+      `;
+      subjectsDiv.appendChild(div);
+    });
+
+    function mark(subjectId, isPresent) {
+      let data = JSON.parse(localStorage.getItem(subjectId)) || { present: 0, total: 0 };
+      if (isPresent) data.present++;
+      data.total++;
+      localStorage.setItem(subjectId, JSON.stringify(data));
+      document.getElementById(`${subjectId}_info`).textContent = getPercentage(data);
+    }
+
+    function getPercentage(data) {
+      if (data.total === 0) return 'Attendance: 0%';
+      return `Attendance: ${(data.present / data.total * 100).toFixed(2)}% (${data.present}/${data.total})`;
+    }
+  </script>
+</body>
+</html>
